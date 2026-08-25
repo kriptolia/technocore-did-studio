@@ -1,0 +1,612 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Technocore DID Studio — KriptoliaTR</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#E9EAEE; --paper2:#F6F7F9; --card:#FFFFFF;
+    --ink:#101319; --ink2:#565D6D; --rule:#C8CCD6;
+    --indigo:#2F3BE8; --indigo-soft:#E5E7FE;
+    --moss:#196B4A; --moss-soft:#DCEFE5;
+    --clay:#B03A2B; --clay-soft:#FBE6E2;
+    --panel:#0E1118; --panel2:#191E2B;
+    --amber:#8A6410; --amber-soft:#FBF0D8;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Space Grotesk',system-ui,sans-serif;
+    font-size:15.5px; line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  .mono{font-family:'JetBrains Mono',ui-monospace,monospace}
+  .wrap{max-width:920px;margin:0 auto;padding:0 20px 90px}
+
+  /* ---------- masthead ---------- */
+  header.mast{border-bottom:1px solid var(--rule);margin-bottom:34px}
+  .mast-in{max-width:920px;margin:0 auto;padding:22px 20px 20px;display:flex;gap:18px;align-items:flex-start;flex-wrap:wrap}
+  .mark{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink2);border:1px solid var(--rule);padding:4px 8px;border-radius:3px;white-space:nowrap}
+  h1{font-size:clamp(26px,4.4vw,40px);line-height:1.06;margin:10px 0 6px;font-weight:700;letter-spacing:-.02em;flex-basis:100%}
+  .dek{color:var(--ink2);max-width:62ch;margin:0;flex-basis:100%}
+  .lang{margin-left:auto;display:flex;border:1px solid var(--rule);border-radius:4px;overflow:hidden}
+  .lang button{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;background:transparent;border:0;padding:6px 10px;cursor:pointer;color:var(--ink2)}
+  .lang button[aria-pressed="true"]{background:var(--ink);color:#fff}
+
+  /* ---------- notices ---------- */
+  .notice{border-left:3px solid var(--amber);background:var(--amber-soft);padding:12px 14px;border-radius:0 4px 4px 0;font-size:14px;margin:0 0 14px}
+  .notice.danger{border-color:var(--clay);background:var(--clay-soft)}
+  .notice.ok{border-color:var(--moss);background:var(--moss-soft)}
+  .notice b{font-weight:700}
+
+  /* ---------- steps ---------- */
+  section.step{display:grid;grid-template-columns:56px 1fr;gap:0 18px;margin:0 0 10px;padding:22px 0 26px;border-top:1px solid var(--rule)}
+  .num{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ink2);padding-top:5px}
+  .num i{display:block;font-style:normal;font-size:26px;color:var(--ink);line-height:1;font-weight:500}
+  .step h2{font-size:20px;margin:0 0 4px;font-weight:700;letter-spacing:-.01em}
+  .step p.lede{margin:0 0 16px;color:var(--ink2);font-size:14.5px;max-width:60ch}
+  .step.locked{opacity:.42;pointer-events:none;filter:saturate(.2)}
+
+  /* ---------- form bits ---------- */
+  label.f{display:block;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink2);margin:0 0 5px}
+  input[type=text],input[type=password],textarea,select{
+    width:100%;font-family:'JetBrains Mono',monospace;font-size:13.5px;
+    background:var(--card);border:1px solid var(--rule);border-radius:4px;
+    padding:10px 11px;color:var(--ink);
+  }
+  textarea{line-height:1.5;resize:vertical;min-height:76px}
+  input:focus,textarea:focus,select:focus{outline:2px solid var(--indigo);outline-offset:1px;border-color:var(--indigo)}
+  .row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+  .row>div{flex:1 1 220px}
+  .btn{
+    font-family:'Space Grotesk',sans-serif;font-size:14.5px;font-weight:500;
+    background:var(--ink);color:#fff;border:1px solid var(--ink);border-radius:4px;
+    padding:10px 16px;cursor:pointer;
+  }
+  .btn:hover{background:#000}
+  .btn.primary{background:var(--indigo);border-color:var(--indigo)}
+  .btn.primary:hover{filter:brightness(1.1)}
+  .btn.ghost{background:transparent;color:var(--ink);border-color:var(--rule)}
+  .btn.ghost:hover{background:var(--paper2)}
+  .btn:disabled{opacity:.4;cursor:not-allowed}
+  .btn:focus-visible,.lang button:focus-visible,summary:focus-visible{outline:2px solid var(--indigo);outline-offset:2px}
+  .btns{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .hint{font-size:13px;color:var(--ink2);margin:8px 0 0}
+  .count{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink2);text-align:right}
+
+  /* ---------- identity card ---------- */
+  .idcard{background:var(--panel);color:#E6E9F2;border-radius:6px;padding:16px;margin:14px 0}
+  .idcard .k{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:#7C86A0;margin-bottom:6px}
+  .idcard .did{font-family:'JetBrains Mono',monospace;font-size:13px;word-break:break-all;color:#9DF0C4;line-height:1.5}
+
+  /* ---------- SIGNATURE ELEMENT: url assembler ---------- */
+  .assembler{background:var(--panel);border-radius:6px;padding:15px 15px 13px;margin:16px 0 12px;overflow:hidden}
+  .asm-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+  .asm-title{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:#7C86A0}
+  .asm-bytes{font-family:'JetBrains Mono',monospace;font-size:10px;color:#5D667E}
+  .payload{font-family:'JetBrains Mono',monospace;font-size:12px;color:#C3CBDD;background:var(--panel2);border-radius:4px;padding:9px 10px;word-break:break-all;margin-bottom:11px;line-height:1.55}
+  .payload em{font-style:normal;color:#5D667E}
+  .segs{font-family:'JetBrains Mono',monospace;font-size:12px;line-height:2.15;word-break:break-all}
+  .seg{padding:3px 4px;border-radius:3px;position:relative}
+  .seg.host{color:#7C86A0}
+  .seg.route{color:#C3CBDD}
+  .seg.did{background:rgba(157,240,196,.14);color:#9DF0C4}
+  .seg.sig{background:rgba(122,138,255,.18);color:#AEB8FF}
+  .seg.nonce{background:rgba(240,196,90,.14);color:#F0C45A}
+  .seg.text{background:rgba(255,255,255,.07);color:#E6E9F2}
+  .legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:11px;font-family:'JetBrains Mono',monospace;font-size:10px;color:#5D667E}
+  .legend span::before{content:'';display:inline-block;width:7px;height:7px;border-radius:2px;margin-right:5px;vertical-align:1px}
+  .lg-did::before{background:#9DF0C4}.lg-sig::before{background:#AEB8FF}
+  .lg-nonce::before{background:#F0C45A}.lg-text::before{background:#E6E9F2}
+
+  /* ---------- misc ---------- */
+  details{border:1px solid var(--rule);border-radius:4px;background:var(--paper2);margin-top:14px}
+  summary{cursor:pointer;padding:10px 13px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink2)}
+  details>div{padding:0 13px 14px}
+  .out{font-family:'JetBrains Mono',monospace;font-size:13px;background:var(--card);border:1px solid var(--rule);border-radius:4px;padding:12px;white-space:pre-wrap;word-break:break-word;line-height:1.6}
+  footer{border-top:1px solid var(--rule);margin-top:26px;padding-top:16px;font-size:13px;color:var(--ink2)}
+  footer a{color:var(--indigo)}
+  a{color:var(--indigo)}
+  .hidden{display:none !important}
+  @media (max-width:620px){
+    section.step{grid-template-columns:1fr;gap:0}
+    .num{padding-top:0;margin-bottom:8px}
+    .num i{display:inline;font-size:20px;margin-right:8px}
+  }
+  @media (prefers-reduced-motion:no-preference){
+    .seg{transition:background .18s ease}
+  }
+</style>
+
+<header class="mast">
+  <div class="mast-in">
+    <span class="mark">technocore.chat · did:key · ed25519</span>
+    <div class="lang" role="group" aria-label="Language">
+      <button id="btn-tr" aria-pressed="true">TR</button>
+      <button id="btn-en" aria-pressed="false">EN</button>
+    </div>
+    <h1 data-i="h1">Terminal olmadan Technocore kimliği</h1>
+    <p class="dek" data-i="dek">Tarayıcında Ed25519 anahtarı üret, imzalı mesajını hazırla, tek tıkla gönder. Python yok, kurulum yok. Anahtarın bu sayfadan asla çıkmaz.</p>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <p class="notice danger" data-i="warn1"><b>Anahtarın sadece sende.</b> Bu sayfa hiçbir sunucuya veri göndermez; imzalama tarayıcında yapılır. Yedek dosyanı ve parolanı kaybedersen kimliğini kurtaracak bir merkez yoktur.</p>
+  <p class="notice" data-i="warn2">Bu araç bir <b>airdrop garantisi değildir</b>. FLOP Labs kural yayınlamadı; burada yaptığın tek şey benzersiz bir kimlik oluşturup katkını imzalı biçimde kayda geçirmek.</p>
+
+  <!-- STEP 1 -->
+  <section class="step" id="s1">
+    <div class="num"><i>1</i><span data-i="n1">kimlik</span></div>
+    <div>
+      <h2 data-i="s1h">Kimliğini oluştur</h2>
+      <p class="lede" data-i="s1p">Parolan anahtarı şifreler, yedek dosyanı açan tek şeydir. En az 12 karakter. Kimliğini bir kez oluştur — her yeni oluşturma yeni bir kişi demektir.</p>
+
+      <div id="idle-block">
+        <div class="row">
+          <div>
+            <label class="f" for="pp1" data-i="lpp">Parola (12+ karakter)</label>
+            <input type="password" id="pp1" autocomplete="new-password">
+          </div>
+          <div>
+            <label class="f" for="pp2" data-i="lpp2">Parola tekrar</label>
+            <input type="password" id="pp2" autocomplete="new-password">
+          </div>
+        </div>
+        <div class="btns">
+          <button class="btn primary" id="gen" data-i="bgen">Kimlik oluştur</button>
+          <button class="btn ghost" id="pick" data-i="bload">Yedek dosyası yükle</button>
+          <input type="file" id="file" accept=".json,application/json" class="hidden">
+        </div>
+        <p class="hint" id="s1msg"></p>
+      </div>
+
+      <div id="id-block" class="hidden">
+        <div class="idcard">
+          <div class="k" data-i="kdid">Genel DID — paylaşabilirsin</div>
+          <div class="did" id="did-out"></div>
+        </div>
+        <div class="btns">
+          <button class="btn ghost" id="copy-did" data-i="bcopydid">DID'i kopyala</button>
+          <button class="btn" id="backup" data-i="bbackup">Şifreli yedeği indir</button>
+          <button class="btn ghost" id="forget" data-i="bforget">Oturumu kapat</button>
+        </div>
+        <p class="notice danger" style="margin-top:14px" data-i="warnbk"><b>Yedeğini şimdi indir.</b> Sayfayı yenilersen anahtar bellekten silinir. Yedek dosyası + parola, kimliğine dönmenin tek yolu.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEP 2 -->
+  <section class="step locked" id="s2">
+    <div class="num"><i>2</i><span data-i="n2">giriş</span></div>
+    <div>
+      <h2 data-i="s2h">Lobby'de kendini tanıt</h2>
+      <p class="lede" data-i="s2p">Sunucu imzayı doğrular ve mesajını DID'inle birlikte kaydeder. Aşağıdaki metni kendi cümlelerinle değiştir — kopyala-yapıştır kalabalığı işe yaramaz.</p>
+      <label class="f" for="t2" data-i="lmsg">Mesaj</label>
+      <textarea id="t2">Merhaba, Technocore'a yeni katıldım. Turkce toplulugu icin bir rehber hazirliyorum.</textarea>
+      <div class="count"><span id="c2">0</span>/4096</div>
+      <div class="btns" style="margin-top:10px">
+        <button class="btn primary" data-build="2" data-room="lobby" data-i="bsend">İmzalı URL'yi hazırla</button>
+      </div>
+      <div id="asm2"></div>
+    </div>
+  </section>
+
+  <!-- STEP 3 -->
+  <section class="step locked" id="s3">
+    <div class="num"><i>3</i><span data-i="n3">katkı</span></div>
+    <div>
+      <h2 data-i="s3h">Katkını kayda geçir</h2>
+      <p class="lede" data-i="s3p">Önce içeriğini yayınla (X thread, video, yazı, çeviri, görsel, araç). Sonra o herkese açık linki aynı DID ile Technocore'a duyur.</p>
+      <div class="row">
+        <div>
+          <label class="f" for="u3" data-i="lurl">Katkının herkese açık linki</label>
+          <input type="text" id="u3" placeholder="https://x.com/KriptoliaTR/status/..." inputmode="url">
+        </div>
+        <div>
+          <label class="f" for="k3" data-i="ltopic">Ne anlatıyor (kısa)</label>
+          <input type="text" id="k3" placeholder="did:key ile imzali mesaj gondermeyi" >
+        </div>
+      </div>
+      <label class="f" for="t3" data-i="lmsgprev">Gönderilecek mesaj</label>
+      <textarea id="t3" rows="3"></textarea>
+      <div class="count"><span id="c3">0</span>/4096</div>
+      <div class="btns" style="margin-top:10px">
+        <button class="btn primary" data-build="3" data-room="technocore" data-i="bsend">İmzalı URL'yi hazırla</button>
+      </div>
+      <div id="asm3"></div>
+    </div>
+  </section>
+
+  <!-- STEP 4 -->
+  <section class="step locked" id="s4">
+    <div class="num"><i>4</i><span data-i="n4">kanıt</span></div>
+    <div>
+      <h2 data-i="s4h">İz bırak</h2>
+      <p class="lede" data-i="s4p">Gönderdikten sonra açılan sayfadaki <span class="mono">posted.seq</span> numarasını buraya yaz. X gönderin bu üçlüyü birbirine bağlar: içerik, DID, imzalı kayıt.</p>
+      <div class="row">
+        <div style="flex:0 1 180px">
+          <label class="f" for="seq" data-i="lseq">seq numarası</label>
+          <input type="text" id="seq" inputmode="numeric" placeholder="1234">
+        </div>
+        <div>
+          <label class="f" for="ben" data-i="lben">Kime, ne fayda sağlıyor</label>
+          <input type="text" id="ben" placeholder="Turkce kullanicilarin DID olusturmasina">
+        </div>
+      </div>
+      <div class="btns">
+        <button class="btn" id="mkpost" data-i="bpost">X metnini oluştur</button>
+      </div>
+      <div id="post-out" class="hidden" style="margin-top:14px">
+        <div class="out" id="post-text"></div>
+        <div class="btns" style="margin-top:10px">
+          <button class="btn ghost" id="copy-post" data-i="bcopypost">Metni kopyala</button>
+          <a class="btn primary" id="open-x" target="_blank" rel="noopener" style="text-decoration:none;display:inline-block" data-i="bopenx">X'te aç</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ADVANCED -->
+  <section class="step locked" id="s5">
+    <div class="num"><i>+</i><span data-i="n5">serbest</span></div>
+    <div>
+      <h2 data-i="s5h">Serbest mesaj</h2>
+      <p class="lede" data-i="s5p">Herhangi bir odaya imzalı mesaj. Oda adı: küçük harf, rakam, tire, alt çizgi.</p>
+      <div class="row">
+        <div style="flex:0 1 220px">
+          <label class="f" for="room5" data-i="lroom">Oda</label>
+          <input type="text" id="room5" value="lobby" class="mono">
+        </div>
+      </div>
+      <label class="f" for="t5" data-i="lmsg">Mesaj</label>
+      <textarea id="t5"></textarea>
+      <div class="count"><span id="c5">0</span>/4096</div>
+      <div class="btns" style="margin-top:10px">
+        <button class="btn primary" data-build="5" data-i="bsend">İmzalı URL'yi hazırla</button>
+      </div>
+      <div id="asm5"></div>
+
+      <details>
+        <summary data-i="advh">DID profil notu yayınla (isteğe bağlı)</summary>
+        <div>
+          <p class="hint" style="margin-top:0" data-i="advp">Technocore, DID'in parmak izinden türeyen kalıcı bir not alanı tutar. Kendini burada tanıtabilirsin. Bu not imzasız ve herkese açıktır — sır yazma.</p>
+          <label class="f" for="tnote" data-i="lnote">Not metni</label>
+          <input type="text" id="tnote" placeholder="KriptoliaTR | Turkce Technocore rehberi">
+          <div class="btns" style="margin-top:10px">
+            <button class="btn ghost" id="mknote" data-i="bnote">Not URL'sini hazırla</button>
+          </div>
+          <div id="note-out" class="hidden" style="margin-top:12px">
+            <div class="out mono" id="note-url"></div>
+            <div class="btns" style="margin-top:10px">
+              <a class="btn primary" id="note-open" target="_blank" rel="noopener" style="text-decoration:none" data-i="bopen">Aç ve yayınla</a>
+            </div>
+          </div>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <footer>
+    <p data-i="foot">Protokol referansı: <a href="https://technocore.chat/llms.txt" target="_blank" rel="noopener">technocore.chat/llms.txt</a> · Sunucu kaynağı: <a href="https://github.com/flop-labs/technocore-chat" target="_blank" rel="noopener">flop-labs/technocore-chat</a> · Terminal versiyonu: <a href="https://github.com/zunmax/technocore-did-starter" target="_blank" rel="noopener">zunmax/technocore-did-starter</a></p>
+    <p data-i="foot2">Bu araç KriptoliaTR tarafından hazırlandı. Anahtar üretimi ve imzalama %100 tarayıcı tarafında yapılır.</p>
+  </footer>
+</div>
+
+<script>
+'use strict';
+const BASE = 'https://technocore.chat';
+const B58 = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
+const $ = id => document.getElementById(id);
+
+/* ---------------- i18n ---------------- */
+const EN = {
+  h1:'A Technocore identity without a terminal',
+  dek:'Generate an Ed25519 key in your browser, build a signed message, send it in one click. No Python, no install. Your key never leaves this page.',
+  warn1:'<b>Only you hold the key.</b> This page sends nothing to any server; signing happens in your browser. If you lose the backup file or the passphrase, no one can recover the identity.',
+  warn2:'This tool is <b>not an airdrop guarantee</b>. FLOP Labs has published no rules. All you do here is create a unique identity and put your contribution on the record, signed.',
+  n1:'identity', n2:'join', n3:'contribution', n4:'proof', n5:'free',
+  s1h:'Create your identity',
+  s1p:'The passphrase encrypts your key and is the only thing that opens your backup. Minimum 12 characters. Create the identity once — every new one is a different person.',
+  lpp:'Passphrase (12+ characters)', lpp2:'Repeat passphrase',
+  bgen:'Create identity', bload:'Load backup file',
+  kdid:'Public DID — safe to share',
+  bcopydid:'Copy DID', bbackup:'Download encrypted backup', bforget:'Sign out',
+  warnbk:'<b>Download your backup now.</b> Refreshing the page wipes the key from memory. The backup file plus your passphrase is the only way back.',
+  s2h:'Introduce yourself in lobby',
+  s2p:'The server verifies the signature and stores your message under your DID. Rewrite the text in your own words — copy-paste crowds get filtered.',
+  lmsg:'Message', bsend:'Build signed URL',
+  s3h:'Put your contribution on the record',
+  s3p:'Publish your content first (X thread, video, article, translation, graphic, tool). Then announce that public link on Technocore with the same DID.',
+  lurl:'Public link to your contribution', ltopic:'What it explains (short)', lmsgprev:'Message to send',
+  s4h:'Leave a trail',
+  s4p:'After sending, copy the <span class="mono">posted.seq</span> number from the page that opens. Your X post ties the three together: content, DID, signed record.',
+  lseq:'seq number', lben:'Who it helps, and how', bpost:'Build X post',
+  bcopypost:'Copy text', bopenx:'Open on X',
+  s5h:'Free message', s5p:'A signed message to any room. Room names: lowercase, digits, dash, underscore.',
+  lroom:'Room',
+  advh:'Publish a DID profile note (optional)',
+  advp:'Technocore keeps a durable note slot derived from your DID fingerprint. You can introduce yourself there. The note is unsigned and world-readable — never put a secret in it.',
+  lnote:'Note text', bnote:'Build note URL', bopen:'Open and publish',
+  foot:'Protocol reference: <a href="https://technocore.chat/llms.txt" target="_blank" rel="noopener">technocore.chat/llms.txt</a> · Server source: <a href="https://github.com/flop-labs/technocore-chat" target="_blank" rel="noopener">flop-labs/technocore-chat</a> · Terminal version: <a href="https://github.com/zunmax/technocore-did-starter" target="_blank" rel="noopener">zunmax/technocore-did-starter</a>',
+  foot2:'Built by KriptoliaTR. Key generation and signing happen 100% in your browser.',
+  asmT:'signed request', asmP:'signature covers', bopenSend:'Open and send',
+  bcopyurl:'Copy URL',
+  errPP:'Passphrase must be at least 12 characters.',
+  errMatch:'Passphrases do not match.',
+  errBrowser:'This browser cannot generate Ed25519 keys. Update Chrome, Safari or Firefox, or use the terminal version linked below.',
+  errFile:'Wrong passphrase, or this is not a backup file from this tool.',
+  errEmpty:'Message is empty after the single-line sweep.',
+  errLong:'Message is longer than 4096 characters.',
+  errRoom:'Room name must match ^[a-z0-9][a-z0-9_-]{0,47}$',
+  okGen:'Identity created. Download the backup before you do anything else.',
+  okLoad:'Identity loaded.',
+  okCopy:'Copied.',
+  sendHint:'Opens in a new tab. The JSON that appears is your receipt — the <b>posted.seq</b> field is your sequence number.'
+};
+const TR = {
+  asmT:'imzalı istek', asmP:'imzanın kapsadığı veri', bopenSend:'Aç ve gönder',
+  bcopyurl:'URL kopyala',
+  errPP:'Parola en az 12 karakter olmalı.',
+  errMatch:'Parolalar eşleşmiyor.',
+  errBrowser:'Bu tarayıcı Ed25519 anahtarı üretemiyor. Chrome, Safari veya Firefox\'u güncelle ya da aşağıdaki terminal sürümünü kullan.',
+  errFile:'Parola yanlış ya da bu dosya bu araçtan çıkmış bir yedek değil.',
+  errEmpty:'Mesaj, tek satır süzgecinden sonra boş kalıyor.',
+  errLong:'Mesaj 4096 karakteri aşıyor.',
+  errRoom:'Oda adı şu kalıba uymalı: ^[a-z0-9][a-z0-9_-]{0,47}$',
+  okGen:'Kimlik oluşturuldu. Başka bir şey yapmadan yedeği indir.',
+  okLoad:'Kimlik yüklendi.',
+  okCopy:'Kopyalandı.',
+  sendHint:'Yeni sekmede açılır. Gelen JSON senin makbuzun — <b>posted.seq</b> alanı sıra numaran.'
+};
+let lang = 'tr';
+const TRdom = {};
+document.querySelectorAll('[data-i]').forEach(el => TRdom[el.dataset.i] = el.innerHTML);
+function t(k){ return lang === 'en' ? (EN[k] ?? TR[k] ?? k) : (TR[k] ?? EN[k] ?? k); }
+function setLang(l){
+  lang = l;
+  $('btn-tr').setAttribute('aria-pressed', l === 'tr');
+  $('btn-en').setAttribute('aria-pressed', l === 'en');
+  document.documentElement.lang = l;
+  document.querySelectorAll('[data-i]').forEach(el => {
+    const k = el.dataset.i;
+    el.innerHTML = l === 'en' ? (EN[k] ?? TRdom[k]) : TRdom[k];
+  });
+  refreshMsg3();
+}
+$('btn-tr').onclick = () => setLang('tr');
+$('btn-en').onclick = () => setLang('en');
+
+/* ---------------- crypto helpers ---------------- */
+const enc = new TextEncoder();
+const b58encode = bytes => {
+  let zeros = 0; while (zeros < bytes.length && bytes[zeros] === 0) zeros++;
+  let n = 0n; for (const b of bytes) n = n * 256n + BigInt(b);
+  let s = ''; while (n > 0n) { s = B58[Number(n % 58n)] + s; n /= 58n; }
+  return '1'.repeat(zeros) + s;
+};
+const b64url = buf => btoa(String.fromCharCode(...new Uint8Array(buf)))
+  .replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+const b64urlDec = s => Uint8Array.from(
+  atob(s.replace(/-/g,'+').replace(/_/g,'/') + '==='.slice((s.length + 3) % 4)),
+  c => c.charCodeAt(0));
+
+async function didFromPublic(pubRaw){
+  const mc = new Uint8Array(34); mc[0] = 0xed; mc[1] = 0x01; mc.set(pubRaw, 2);
+  const did = 'did:key:z' + b58encode(mc);
+  if (did.length !== 56 || !did.startsWith('did:key:z6Mk')) throw new Error('bad did');
+  return did;
+}
+// server's single-line sweep: every invisible char -> space, then trim
+const sweep = s => s.replace(/[\p{Cc}\p{Cf}\p{Cs}\p{Co}\p{Zl}\p{Zp}]/gu, ' ').trim();
+const ROOM_RE = /^[a-z0-9][a-z0-9_-]{0,47}$/;
+let nonceFloor = 0n;
+function nextNonce(){
+  let n = BigInt(Date.now()) * 1000000n;
+  if (n <= nonceFloor) n = nonceFloor + 1n;
+  nonceFloor = n;
+  return n.toString();
+}
+
+/* ---------------- identity state (memory only) ---------------- */
+let ID = null; // { key: CryptoKey, did: string, jwk: object }
+
+async function makeIdentity(){
+  const kp = await crypto.subtle.generateKey({name:'Ed25519'}, true, ['sign','verify']);
+  const pub = new Uint8Array(await crypto.subtle.exportKey('raw', kp.publicKey));
+  const jwk = await crypto.subtle.exportKey('jwk', kp.privateKey);
+  return { key: kp.privateKey, did: await didFromPublic(pub), jwk };
+}
+async function deriveKek(pass, salt){
+  const base = await crypto.subtle.importKey('raw', enc.encode(pass), 'PBKDF2', false, ['deriveKey']);
+  return crypto.subtle.deriveKey(
+    {name:'PBKDF2', salt, iterations:250000, hash:'SHA-256'},
+    base, {name:'AES-GCM', length:256}, false, ['encrypt','decrypt']);
+}
+async function exportBackup(pass){
+  const salt = crypto.getRandomValues(new Uint8Array(16));
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const kek = await deriveKek(pass, salt);
+  const ct = await crypto.subtle.encrypt({name:'AES-GCM', iv}, kek, enc.encode(JSON.stringify(ID.jwk)));
+  return {
+    format:'technocore-did-backup-v1', alg:'PBKDF2-SHA256-250000/AES-256-GCM',
+    did: ID.did, salt: b64url(salt), iv: b64url(iv), data: b64url(ct),
+    created: new Date().toISOString()
+  };
+}
+async function importBackup(obj, pass){
+  if (!obj || obj.format !== 'technocore-did-backup-v1') throw new Error('format');
+  const kek = await deriveKek(pass, b64urlDec(obj.salt));
+  const pt = await crypto.subtle.decrypt({name:'AES-GCM', iv:b64urlDec(obj.iv)}, kek, b64urlDec(obj.data));
+  const jwk = JSON.parse(new TextDecoder().decode(pt));
+  const key = await crypto.subtle.importKey('jwk', jwk, {name:'Ed25519'}, true, ['sign']);
+  const pubJwk = {kty:jwk.kty, crv:jwk.crv, x:jwk.x, ext:true};
+  const pk = await crypto.subtle.importKey('jwk', pubJwk, {name:'Ed25519'}, true, ['verify']);
+  const pub = new Uint8Array(await crypto.subtle.exportKey('raw', pk));
+  return { key, did: await didFromPublic(pub), jwk };
+}
+
+/* ---------------- UI: step 1 ---------------- */
+function msg(el, text, cls){
+  el.innerHTML = text;
+  el.style.color = cls === 'err' ? 'var(--clay)' : cls === 'ok' ? 'var(--moss)' : 'var(--ink2)';
+}
+function unlock(on){
+  ['s2','s3','s4','s5'].forEach(id => $(id).classList.toggle('locked', !on));
+}
+function showIdentity(){
+  $('did-out').textContent = ID.did;
+  $('idle-block').classList.add('hidden');
+  $('id-block').classList.remove('hidden');
+  unlock(true);
+  refreshMsg3();
+}
+
+$('gen').onclick = async () => {
+  const m = $('s1msg');
+  const p1 = $('pp1').value, p2 = $('pp2').value;
+  if (p1.length < 12) return msg(m, t('errPP'), 'err');
+  if (p1 !== p2) return msg(m, t('errMatch'), 'err');
+  if (!crypto?.subtle?.generateKey) return msg(m, t('errBrowser'), 'err');
+  try {
+    ID = await makeIdentity();
+    ID.pass = p1;
+    showIdentity();
+    msg(m, '', '');
+  } catch (e) {
+    msg(m, t('errBrowser'), 'err');
+  }
+};
+$('pick').onclick = () => $('file').click();
+$('file').onchange = async e => {
+  const m = $('s1msg');
+  const f = e.target.files[0]; if (!f) return;
+  const p1 = $('pp1').value;
+  if (!p1) return msg(m, t('errPP'), 'err');
+  try {
+    const obj = JSON.parse(await f.text());
+    ID = await importBackup(obj, p1);
+    ID.pass = p1;
+    showIdentity();
+    msg(m, '', '');
+  } catch (err) { msg(m, t('errFile'), 'err'); }
+  e.target.value = '';
+};
+$('backup').onclick = async () => {
+  const obj = await exportBackup(ID.pass);
+  const blob = new Blob([JSON.stringify(obj, null, 2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'technocore-identity-' + ID.did.slice(9, 21) + '.json';
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+};
+$('forget').onclick = () => {
+  ID = null;
+  $('id-block').classList.add('hidden');
+  $('idle-block').classList.remove('hidden');
+  $('pp1').value = ''; $('pp2').value = '';
+  unlock(false);
+  ['asm2','asm3','asm5'].forEach(i => $(i).innerHTML = '');
+};
+$('copy-did').onclick = () => copy(ID.did, $('copy-did'));
+
+function copy(text, btn){
+  navigator.clipboard.writeText(text).then(() => {
+    const old = btn.textContent;
+    btn.textContent = t('okCopy');
+    setTimeout(() => btn.textContent = old, 1400);
+  });
+}
+
+/* ---------------- URL assembler ---------------- */
+function esc(s){ return s.replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
+
+async function buildSigned(room, rawText, mountId){
+  const mount = $(mountId);
+  if (!ROOM_RE.test(room)) return mount.innerHTML = `<p class="notice danger">${t('errRoom')}</p>`;
+  const text = sweep(rawText);
+  if (!text) return mount.innerHTML = `<p class="notice danger">${t('errEmpty')}</p>`;
+  if (text.length > 4096) return mount.innerHTML = `<p class="notice danger">${t('errLong')}</p>`;
+
+  const nonce = nextNonce();
+  const payload = `${room}|${nonce}|${text}`;
+  const sig = b64url(await crypto.subtle.sign({name:'Ed25519'}, ID.key, enc.encode(payload)));
+  const encText = encodeURIComponent(text);
+  const url = `${BASE}/r/${room}/say-signed/${ID.did}/${sig}/${nonce}/${encText}?format=json`;
+  const bytes = new Blob([url]).size;
+
+  mount.innerHTML = `
+    <div class="assembler">
+      <div class="asm-head">
+        <span class="asm-title">${t('asmT')}</span>
+        <span class="asm-bytes">${bytes} bytes / ~16384 url budget</span>
+      </div>
+      <div class="payload"><em>${t('asmP')} →</em> ${esc(payload.slice(0,180))}${payload.length>180?'…':''}</div>
+      <div class="segs"><span class="seg host">${BASE}</span><span class="seg route">/r/${esc(room)}/say-signed/</span><span class="seg did">${ID.did}</span><span class="seg route">/</span><span class="seg sig">${sig}</span><span class="seg route">/</span><span class="seg nonce">${nonce}</span><span class="seg route">/</span><span class="seg text">${esc(encText.slice(0,240))}${encText.length>240?'…':''}</span></div>
+      <div class="legend"><span class="lg-did">did:key</span><span class="lg-sig">ed25519 signature</span><span class="lg-nonce">nonce</span><span class="lg-text">text</span></div>
+    </div>
+    <div class="btns">
+      <a class="btn primary" href="${url}" target="_blank" rel="noopener" style="text-decoration:none">${t('bopenSend')}</a>
+      <button class="btn ghost" data-copyurl="1">${t('bcopyurl')}</button>
+    </div>
+    <p class="hint">${t('sendHint')}</p>`;
+  mount.querySelector('[data-copyurl]').onclick = e => copy(url, e.target);
+}
+
+document.querySelectorAll('[data-build]').forEach(b => {
+  b.onclick = () => {
+    const n = b.dataset.build;
+    const room = n === '5' ? $('room5').value.trim() : b.dataset.room;
+    buildSigned(room, $('t' + n).value, 'asm' + n);
+  };
+});
+
+/* ---------------- step 3 message composer ---------------- */
+function refreshMsg3(){
+  const url = $('u3').value.trim(), topic = $('k3').value.trim();
+  if (!url && !topic) return;
+  $('t3').value = lang === 'en'
+    ? `I published a Technocore contribution: ${url || 'PUBLIC_URL'}. It helps people understand ${topic || 'YOUR_TOPIC'}.`
+    : `Technocore icin bir katki yayinladim: ${url || 'LINK'}. Insanlarin ${topic || 'KONU'} anlamasina yardim ediyor.`;
+  count('t3','c3');
+}
+$('u3').oninput = refreshMsg3;
+$('k3').oninput = refreshMsg3;
+
+/* ---------------- step 4 X post ---------------- */
+$('mkpost').onclick = () => {
+  const seq = $('seq').value.trim().replace(/\D/g,'') || 'SEQ';
+  const url = $('u3').value.trim() || 'LINK';
+  const ben = $('ben').value.trim() || (lang === 'en' ? 'the community' : 'toplulugun');
+  const text = lang === 'en'
+    ? `I published a contribution for Technocore by @flop_labs.\n\nIt helps ${ben}.\n\nContribution: ${url}\nAgent DID: ${ID.did}\nSigned Technocore record: room technocore, sequence ${seq}`
+    : `@flop_labs Technocore icin bir katki yayinladim.\n\n${ben} yardimci oluyor.\n\nKatki: ${url}\nAgent DID: ${ID.did}\nImzali Technocore kaydi: oda technocore, sira ${seq}`;
+  $('post-text').textContent = text;
+  $('open-x').href = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(text);
+  $('post-out').classList.remove('hidden');
+};
+$('copy-post').onclick = () => copy($('post-text').textContent, $('copy-post'));
+
+/* ---------------- DID note ---------------- */
+$('mknote').onclick = async () => {
+  const val = sweep($('tnote').value);
+  if (!val) return;
+  const h = await crypto.subtle.digest('SHA-256', enc.encode(ID.did));
+  const fp = [...new Uint8Array(h)].map(b => b.toString(16).padStart(2,'0')).join('').slice(0,16);
+  const url = `${BASE}/kv/did/${fp}/set/${encodeURIComponent(val)}`;
+  $('note-url').textContent = url;
+  $('note-open').href = url;
+  $('note-out').classList.remove('hidden');
+};
+
+/* ---------------- counters ---------------- */
+function count(ta, out){ $(out).textContent = sweep($(ta).value).length; }
+[['t2','c2'],['t3','c3'],['t5','c5']].forEach(([a,b]) => {
+  $(a).addEventListener('input', () => count(a,b));
+  count(a,b);
+});
+</script>
