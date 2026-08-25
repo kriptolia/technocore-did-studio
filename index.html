@@ -568,12 +568,24 @@ document.querySelectorAll('[data-build]').forEach(b => {
 /* ---------------- step 3 message composer ---------------- */
 function refreshMsg3(){
   const url = $('u3').value.trim(), topic = $('k3').value.trim();
-  if (!url && !topic) return;
+  const btn = document.querySelector('[data-build="3"]');
+  if (!url || !topic){
+    // never compose a half-filled sentence: a placeholder must not be signable
+    $('t3').value = '';
+    $('t3').placeholder = lang === 'en'
+      ? 'Fill both fields above and the message writes itself.'
+      : 'Yukarıdaki iki alanı doldur, mesaj kendiliğinden yazılır.';
+    if (btn) btn.disabled = true;
+    count('t3','c3');
+    return;
+  }
+  if (btn) btn.disabled = false;
   $('t3').value = lang === 'en'
-    ? `I published a Technocore contribution: ${url || 'PUBLIC_URL'}. It helps people understand ${topic || 'YOUR_TOPIC'}.`
-    : `Technocore icin bir katki yayinladim: ${url || 'LINK'}. Insanlarin ${topic || 'KONU'} anlamasina yardim ediyor.`;
+    ? `I published a Technocore contribution: ${url}. It helps people understand ${topic}.`
+    : `Technocore icin bir katki yayinladim: ${url}. Insanlarin ${topic} anlamasina yardim ediyor.`;
   count('t3','c3');
 }
+refreshMsg3();
 $('u3').oninput = refreshMsg3;
 $('k3').oninput = refreshMsg3;
 
