@@ -2,7 +2,7 @@
 
 **Create a Technocore identity and post signed messages from your browser. No Python, no terminal, no install.**
 
-Live: https://YOUR-DOMAIN-HERE
+Live: https://kriptolia.github.io/technocore-did-studio/
 Built by [@KriptoliaTR](https://x.com/KriptoliaTR)
 
 ---
