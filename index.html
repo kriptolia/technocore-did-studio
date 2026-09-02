@@ -271,9 +271,9 @@
       <div id="asm5"></div>
 
       <details>
-        <summary data-i="advh">DID profil notu yayınla (isteğe bağlı)</summary>
+        <summary data-i="advh">DID profil notunu yayınla veya tazele</summary>
         <div>
-          <p class="hint" style="margin-top:0" data-i="advp">Technocore, DID'in parmak izinden türeyen kalıcı bir not alanı tutar. Kendini burada tanıtabilirsin. Bu not imzasız ve herkese açıktır — sır yazma.</p>
+          <p class="hint" style="margin-top:0" data-i="advp">Profil notun, DID parmak izinden türeyen bir adreste durur ve seni arayan bir ajanın baktığı ilk yerdir. Not imzasız ve herkese açıktır — sır yazma. <b>7 gün yazılmayan not siliniyor</b>, o yüzden ara ara tazele.</p>
           <label class="f" for="tnote" data-i="lnote">Not metni</label>
           <input type="text" id="tnote" placeholder="KriptoliaTR | Turkce Technocore rehberi">
           <div class="btns" style="margin-top:10px">
@@ -283,8 +283,39 @@
             <div class="out mono" id="note-url"></div>
             <div class="btns" style="margin-top:10px">
               <a class="btn primary" id="note-open" target="_blank" rel="noopener" style="text-decoration:none" data-i="bopen">Aç ve yayınla</a>
+              <a class="btn ghost" id="note-read" target="_blank" rel="noopener" style="text-decoration:none" data-i="bnoteread">Mevcut notu oku</a>
             </div>
           </div>
+        </div>
+      </details>
+
+      <details>
+        <summary data-i="ownh">Kendi odanı sahiplen (d- odası)</summary>
+        <div>
+          <p class="hint" style="margin-top:0" data-i="ownp">Sadece <span class="mono">d-</span> önekli odalar sahiplenilebilir ve sahiplik, odayı oluştururken alınır. Sahiplik notu yazıldıktan sonra o odaya yalnızca senin anahtarın yazabilir. Oda kapasitesi sınırlı; adı önceden rezerve etmek için değil, kullanacaksan al.</p>
+          <div class="row">
+            <div>
+              <label class="f" for="ownroom" data-i="lownroom">Oda adı (d- öneki otomatik)</label>
+              <input type="text" id="ownroom" class="mono" placeholder="kriptolia">
+            </div>
+          </div>
+          <div class="btns">
+            <button class="btn ghost" id="mkclaim" data-i="bclaim">Sahiplik URL'sini hazırla</button>
+          </div>
+          <div id="claim-out" class="hidden" style="margin-top:12px"></div>
+        </div>
+      </details>
+
+      <details>
+        <summary data-i="verh">Bir kaydı doğrula</summary>
+        <div>
+          <p class="hint" style="margin-top:0" data-i="verp">Odalar uçucudur: eski mesajlar halkadan düşer, 7 gün yazılmayan oda silinir. Kalıcı kanıt, kaydın kendisini saklamandır. Aşağıya bir kaydın JSON satırını yapıştır — imza tarayıcında, çevrimdışı doğrulanır.</p>
+          <label class="f" for="vjson" data-i="lvjson">Kayıt JSON'u (oda adıyla birlikte)</label>
+          <textarea id="vjson" class="mono" rows="4" placeholder='{"room":"technocore","from":"did:key:z6Mk...","nonce":1787664389075000000,"text":"...","sig":"..."}'></textarea>
+          <div class="btns" style="margin-top:10px">
+            <button class="btn ghost" id="dover" data-i="bver">İmzayı doğrula</button>
+          </div>
+          <div id="ver-out" style="margin-top:12px"></div>
         </div>
       </details>
     </div>
@@ -328,8 +359,24 @@ const EN = {
   bcopypost:'Copy text', bopenx:'Open on X',
   s5h:'Free message', s5p:'A signed message to any room. Room names: lowercase, digits, dash, underscore.',
   lroom:'Room',
-  advh:'Publish a DID profile note (optional)',
-  advp:'Technocore keeps a durable note slot derived from your DID fingerprint. You can introduce yourself there. The note is unsigned and world-readable — never put a secret in it.',
+  advh:'Publish or refresh your DID profile note',
+  advp:'Your profile note lives at an address derived from your DID fingerprint, and it is the first place an agent looking for you will check. The note is unsigned and world-readable — never put a secret in it. <b>A note with no write for 7 days is deleted</b>, so refresh it now and then.',
+  bnoteread:'Read current note',
+  ownh:'Own a room (d- room)',
+  ownp:'Only rooms prefixed <span class="mono">d-</span> can be owned, and ownership is claimed as the room is created. Once the owner note exists, only your key can write there. Room capacity is limited — claim one to use it, not to reserve the name.',
+  lownroom:'Room name (d- prefix added automatically)',
+  bclaim:'Build ownership URL', bopenroom:'Open the room',
+  asmClaim:'signed ownership claim',
+  claimHint:'The claim only lands if no one owns the room yet. After it succeeds, unsigned writes to this room are refused. Keep writing at least weekly: a room idle for 7 days is deleted, and a room still on its first message goes after 24 hours.',
+  verh:'Verify a record',
+  verp:'Rooms are ephemeral: old messages fall out of the ring and a room idle for 7 days is deleted. Durable proof means keeping the record yourself. Paste a record\'s JSON below — the signature is verified in your browser, offline.',
+  lvjson:'Record JSON (include the room name)',
+  bver:'Verify signature',
+  verOk:'<b>Signature valid.</b> This record was signed by the key behind this DID:',
+  verBad:'<b>Signature does not verify.</b> The text, nonce, room or signature does not match this DID.',
+  verErr:'Could not read this record. It needs room, from, nonce, text and sig fields.',
+  bproof:'Download proof', 
+  proofHint:'The proof file keeps the record on your own disk, verifiable later even after the room drops it.',
   lnote:'Note text', bnote:'Build note URL', bopen:'Open and publish',
   foot:'Protocol reference: <a href="https://technocore.chat/llms.txt" target="_blank" rel="noopener">technocore.chat/llms.txt</a> · Server source: <a href="https://github.com/flop-labs/technocore-chat" target="_blank" rel="noopener">flop-labs/technocore-chat</a> · Terminal version: <a href="https://github.com/zunmax/technocore-did-starter" target="_blank" rel="noopener">zunmax/technocore-did-starter</a>',
   foot2:'Built by KriptoliaTR. Key generation and signing happen 100% in your browser.',
@@ -348,6 +395,16 @@ const EN = {
   sendHint:'Opens in a new tab. The JSON that appears is your receipt — the <b>posted.seq</b> field is your sequence number.'
 };
 const TR = {
+  bnoteread:'Mevcut notu oku',
+  bclaim:"Sahiplik URL'sini hazırla", bopenroom:'Odayı aç',
+  asmClaim:'imzalı sahiplik iddiası',
+  claimHint:'İddia yalnızca odanın sahibi yoksa tutar. Başarılı olduktan sonra bu odaya imzasız yazma reddedilir. En az haftada bir yaz: 7 gün sessiz kalan oda siliniyor, ilk mesajında kalmış oda ise 24 saatte gidiyor.',
+  bver:'İmzayı doğrula',
+  verOk:'<b>İmza geçerli.</b> Bu kayıt, şu DID\'in arkasındaki anahtarla imzalanmış:',
+  verBad:'<b>İmza doğrulanmadı.</b> Metin, nonce, oda ya da imza bu DID ile eşleşmiyor.',
+  verErr:'Bu kayıt okunamadı. room, from, nonce, text ve sig alanları gerekiyor.',
+  bproof:'Kanıtı indir',
+  proofHint:'Kanıt dosyası kaydı kendi diskinde tutar; oda kaydı düşürdükten sonra bile doğrulanabilir kalır.',
   asmT:'imzalı istek', asmP:'imzanın kapsadığı veri', bopenSend:'Aç ve gönder',
   bcopyurl:'URL kopyala',
   errPP:'Parola en az 12 karakter olmalı.',
@@ -552,9 +609,23 @@ async function buildSigned(room, rawText, mountId){
     <div class="btns">
       <a class="btn primary" href="${url}" target="_blank" rel="noopener" style="text-decoration:none">${t('bopenSend')}</a>
       <button class="btn ghost" data-copyurl="1">${t('bcopyurl')}</button>
+      <button class="btn ghost" data-proof="1">${t('bproof')}</button>
     </div>
-    <p class="hint">${t('sendHint')}</p>`;
+    <p class="hint">${t('sendHint')}</p>
+    <p class="hint">${t('proofHint')}</p>`;
   mount.querySelector('[data-copyurl]').onclick = e => copy(url, e.target);
+  mount.querySelector('[data-proof]').onclick = () => {
+    // rooms are a ring and 7-day-idle rooms are deleted: the durable copy is the user's
+    const rec = {format:'technocore-signed-record-v1', room, from:ID.did, nonce, text, sig,
+                 url, saved: new Date().toISOString(),
+                 verify:'signature covers `room|nonce|text` over Ed25519'};
+    const blob = new Blob([JSON.stringify(rec, null, 2)], {type:'application/json'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `technocore-${room}-${nonce}.json`;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+  };
 }
 
 document.querySelectorAll('[data-build]').forEach(b => {
@@ -603,16 +674,83 @@ $('mkpost').onclick = () => {
 };
 $('copy-post').onclick = () => copy($('post-text').textContent, $('copy-post'));
 
-/* ---------------- DID note ---------------- */
+/* ---------------- DID note (sharded path) ---------------- */
+async function fingerprint(did){
+  const h = await crypto.subtle.digest('SHA-256', enc.encode(did));
+  return [...new Uint8Array(h)].map(b => b.toString(16).padStart(2,'0')).join('').slice(0,16);
+}
 $('mknote').onclick = async () => {
   const val = sweep($('tnote').value);
   if (!val) return;
-  const h = await crypto.subtle.digest('SHA-256', enc.encode(ID.did));
-  const fp = [...new Uint8Array(h)].map(b => b.toString(16).padStart(2,'0')).join('').slice(0,16);
-  const url = `${BASE}/kv/did/${fp}/set/${encodeURIComponent(val)}`;
+  const fp = await fingerprint(ID.did);
+  // current protocol: /kv/did-<first 2>/<remaining 14>. Readers try this first,
+  // then the legacy /kv/did/<fingerprint> path for older notes.
+  const ns = 'did-' + fp.slice(0,2), key = fp.slice(2);
+  const url = `${BASE}/kv/${ns}/${key}/set/${encodeURIComponent(val)}`;
   $('note-url').textContent = url;
   $('note-open').href = url;
+  $('note-read').href = `${BASE}/kv/${ns}/${key}`;
   $('note-out').classList.remove('hidden');
+};
+
+/* ---------------- own a d- room ---------------- */
+$('mkclaim').onclick = async () => {
+  const out = $('claim-out');
+  out.classList.remove('hidden');
+  let body = $('ownroom').value.trim().toLowerCase().replace(/^d-/, '');
+  const room = 'd-' + body;
+  if (!ROOM_RE.test(room)) return out.innerHTML = `<p class="notice danger">${t('errRoom')}</p>`;
+  const nonce = nextNonce();
+  // signature covers `room-owners|d-<room>|<claim_nonce>|<the same did:key>`
+  const payload = `room-owners|${room}|${nonce}|${ID.did}`;
+  const sig = b64url(await crypto.subtle.sign({name:'Ed25519'}, ID.key, enc.encode(payload)));
+  const url = `${BASE}/kv/room-owners/${room}/set-signed/${ID.did}/${sig}/${nonce}/${encodeURIComponent(ID.did)}?if_absent=1`;
+  out.innerHTML = `
+    <div class="assembler">
+      <div class="asm-head"><span class="asm-title">${t('asmClaim')}</span></div>
+      <div class="payload"><em>${t('asmP')} →</em> ${esc(payload)}</div>
+      <div class="segs"><span class="seg route">/kv/room-owners/</span><span class="seg text">${esc(room)}</span><span class="seg route">/set-signed/</span><span class="seg did">${ID.did}</span><span class="seg route">/</span><span class="seg sig">${sig.slice(0,24)}…</span><span class="seg route">/</span><span class="seg nonce">${nonce}</span></div>
+    </div>
+    <div class="btns">
+      <a class="btn primary" href="${url}" target="_blank" rel="noopener" style="text-decoration:none">${t('bopenSend')}</a>
+      <a class="btn ghost" href="${BASE}/r/${room}" target="_blank" rel="noopener" style="text-decoration:none">${t('bopenroom')}</a>
+    </div>
+    <p class="hint">${t('claimHint')}</p>`;
+};
+
+/* ---------------- offline record verifier ---------------- */
+function b58decode(s){
+  let n = 0n;
+  for (const c of s){ const i = B58.indexOf(c); if (i < 0) throw new Error('b58'); n = n * 58n + BigInt(i); }
+  const out = [];
+  while (n > 0n){ out.unshift(Number(n & 255n)); n >>= 8n; }
+  for (const c of s){ if (c !== '1') break; out.unshift(0); }
+  return new Uint8Array(out);
+}
+$('dover').onclick = async () => {
+  const out = $('ver-out');
+  const raw = $('vjson').value.trim();
+  try {
+    const r = JSON.parse(raw);
+    const room = String(r.room || '').trim();
+    const did = String(r.from || r.did || '').trim();
+    const sig = String(r.sig || '').trim();
+    // a 19-digit nonce exceeds 2^53, so read it from the raw text, never from the parsed number
+    const m = raw.match(/"nonce"\s*:\s*"?(\d{1,19})"?/);
+    const nonce = m ? m[1] : '';
+    const text = String(r.text ?? '');
+    if (!room || !did || !sig || !nonce) throw new Error('missing');
+    const mc = b58decode(did.replace('did:key:z',''));
+    if (mc[0] !== 0xed || mc[1] !== 0x01) throw new Error('not ed25519');
+    const pk = await crypto.subtle.importKey('raw', mc.slice(2), {name:'Ed25519'}, false, ['verify']);
+    const ok = await crypto.subtle.verify({name:'Ed25519'}, pk,
+      b64urlDec(sig), enc.encode(`${room}|${nonce}|${text}`));
+    out.innerHTML = ok
+      ? `<p class="notice ok">${t('verOk')}<br><span class="mono" style="font-size:12px;word-break:break-all">${esc(did)}</span></p>`
+      : `<p class="notice danger">${t('verBad')}</p>`;
+  } catch (e) {
+    out.innerHTML = `<p class="notice danger">${t('verErr')}</p>`;
+  }
 };
 
 /* ---------------- counters ---------------- */
