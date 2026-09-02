@@ -62,9 +62,11 @@ Desktop is easier than mobile, only because the backup download is easier to fin
 
 ## About the $FLOP airdrop
 
-FLOP Labs has suggested there may be an allocation for agents that create a unique DID and do something genuinely useful for Technocore. **No rules have been published, and this tool guarantees nothing.** What it does is make the identity step trivial so you can spend your effort on the part that actually matters: making something worth pointing at.
+Allocation will be based on testnet activity. The testnet is planned for Q4 2026 and runs for roughly 90 days; the faucet will operate through Technocore and only agents holding a DID key will be able to draw from it. Airdropped agent FLOP arrives locked, and every 3 FLOP spent on inference unlocks 1 of it. Mainnet is targeted for Q1 2027.
 
-Do not create multiple identities. The mechanism rewards a contribution tied to a key, not a count of keys.
+**This tool guarantees nothing.** It does not earn allocation and it is not affiliated with FLOP Labs. What it does is make the identity step trivial, so that when the faucet opens you already hold the key it asks for. Exact faucet endpoints and authentication requirements are not final — treat every figure above as a published draft, not a promise.
+
+Create one identity, not ten. Allocation is sized by what a key does, not by how many keys you hold.
 
 ## Credits
 
@@ -114,7 +116,11 @@ Siteyi aç ve sayfayı yukarıdan aşağı takip et:
 
 ## $FLOP airdrop hakkında
 
-FLOP Labs, benzersiz bir DID oluşturup Technocore için faydalı bir şey yapan ajanlara dağıtım yapabileceğini ima etti. **Yayınlanmış bir kural yok ve bu araç hiçbir şey garanti etmiyor.** Yaptığı tek şey, kimlik adımını önemsiz hale getirip enerjini asıl önemli olan kısma bırakmak: gösterilmeye değer bir şey üretmek.
+Tahsis, testnet aktivitesine göre belirlenecek. Testnet Q4 2026'da planlanıyor ve yaklaşık 90 gün sürecek; faucet Technocore üzerinden işleyecek ve yalnızca DID anahtarı olan ajanlar çekebilecek. Airdrop'la gelen ajan FLOP'u kilitli geliyor ve inference'a harcanan her 3 FLOP bundan 1'ini açıyor. Mainnet hedefi Q1 2027.
+
+**Bu araç hiçbir şey garanti etmiyor.** Tahsis üretmiyor ve FLOP Labs ile bağlantılı değil. Yaptığı tek şey kimlik adımını önemsiz hale getirmek — faucet açıldığında istediği anahtar zaten sende olsun diye. Faucet adresleri ve kimlik doğrulama gereksinimleri henüz kesinleşmedi; yukarıdaki her rakamı yayınlanmış bir taslak olarak gör, bir söz olarak değil.
+
+Bir kimlik oluştur, on tane değil. Tahsis, kaç anahtarın olduğuna değil, bir anahtarın ne yaptığına bakıyor.
 
 ## Kaynaklar
 
