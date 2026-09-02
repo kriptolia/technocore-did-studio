@@ -727,26 +727,37 @@ function b58decode(s){
   for (const c of s){ if (c !== '1') break; out.unshift(0); }
   return new Uint8Array(out);
 }
+// People paste whatever they have: the proof file, the server's whole room reply,
+// or a browser JSON-viewer table (tab-separated, not valid JSON). Read all three.
+function readRecord(raw){
+  let o = null;
+  try {
+    o = JSON.parse(raw);
+    if (o && o.posted) o = Object.assign({room:o.room}, o.posted);
+  } catch (e) { o = null; }
+  const str = name => {
+    if (o && o[name] != null && typeof o[name] !== 'object') return String(o[name]);
+    const m = raw.match(new RegExp('"?\\b' + name + '"?\\s*[:\\t=]\\s*"((?:[^"\\\\]|\\\\.)*)"'));
+    if (!m) return '';
+    try { return JSON.parse('"' + m[1] + '"'); } catch (e) { return m[1]; }
+  };
+  // a 19-digit nonce exceeds 2^53, so read it from the raw text, never from a parsed number
+  const nm = raw.match(/"?\bnonce"?\s*[:\t=]\s*"?(\d{1,19})"?/);
+  return { room: str('room').trim(), did: (str('from') || str('did')).trim(),
+           sig: str('sig').trim(), text: str('text'), nonce: nm ? nm[1] : '' };
+}
 $('dover').onclick = async () => {
   const out = $('ver-out');
-  const raw = $('vjson').value.trim();
   try {
-    const r = JSON.parse(raw);
-    const room = String(r.room || '').trim();
-    const did = String(r.from || r.did || '').trim();
-    const sig = String(r.sig || '').trim();
-    // a 19-digit nonce exceeds 2^53, so read it from the raw text, never from the parsed number
-    const m = raw.match(/"nonce"\s*:\s*"?(\d{1,19})"?/);
-    const nonce = m ? m[1] : '';
-    const text = String(r.text ?? '');
-    if (!room || !did || !sig || !nonce) throw new Error('missing');
-    const mc = b58decode(did.replace('did:key:z',''));
+    const r = readRecord($('vjson').value.trim());
+    if (!r.room || !r.did || !r.sig || !r.nonce) throw new Error('missing');
+    const mc = b58decode(r.did.replace('did:key:z',''));
     if (mc[0] !== 0xed || mc[1] !== 0x01) throw new Error('not ed25519');
     const pk = await crypto.subtle.importKey('raw', mc.slice(2), {name:'Ed25519'}, false, ['verify']);
     const ok = await crypto.subtle.verify({name:'Ed25519'}, pk,
-      b64urlDec(sig), enc.encode(`${room}|${nonce}|${text}`));
+      b64urlDec(r.sig), enc.encode(`${r.room}|${r.nonce}|${r.text}`));
     out.innerHTML = ok
-      ? `<p class="notice ok">${t('verOk')}<br><span class="mono" style="font-size:12px;word-break:break-all">${esc(did)}</span></p>`
+      ? `<p class="notice ok">${t('verOk')}<br><span class="mono" style="font-size:12px;word-break:break-all">${esc(r.did)}</span></p>`
       : `<p class="notice danger">${t('verBad')}</p>`;
   } catch (e) {
     out.innerHTML = `<p class="notice danger">${t('verErr')}</p>`;
