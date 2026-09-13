@@ -281,15 +281,15 @@
         <button class="btn primary" id="mkreg" data-i="breg">Kayıt mesajını hazırla</button>
         <a class="btn ghost" href="https://technocore.chat/r/mb-sonnet-2-registration?format=json&limit=200" target="_blank" rel="noopener" style="text-decoration:none" data-i="brecpt">Makbuzları oku</a>
       </div>
-      <p class="hint" data-i="sreghint">Makbuz gecikebilir; eksik makbuz gecikmedir, ret değildir. Tekrar denersen <b>aynı request_id</b> ile dene — yeni ID üretme.</p>
+      <p class="hint" data-i="sreghint">Gönderdikten sonra doğrudan pusulaya geçebilirsin. Makbuz sonradan gelir; eksik makbuz gecikmedir, ret değildir. Tekrar denersen <b>aynı request_id</b> ile dene — yeni ID üretme.</p>
       <div id="asm6"></div>
 
       <h2 style="margin-top:26px;font-size:17px" data-i="s6bh">Oy pusulası</h2>
-      <p class="lede" data-i="s6bp">Önce <span class="mono">voter</span> olarak kaydolup makbuz almalısın. Pusula, gönderilmiş bir şiirin <span class="mono">entry_id</span>'sini ister; girişler makbuzlanana kadar bu numara oluşmaz. Hakem durumu <span class="mono">d-sonnet-2-rules</span> odasına dört saatte bir yazıyor. Pusulanı 18 Eylül 12:00 UTC'ye kadar değiştirebilirsin — son geçerli pusulan sayılır.</p>
+      <p class="lede" data-i="s6bp">Kayıt mesajını gönderdikten hemen sonra pusulanı atabilirsin — makbuzu beklemene gerek yok, hakem uygunluğu ve oyları kapanıştan sonra topluca değerlendiriyor. Tek şart sıra: önce kayıt, sonra pusula. Pusulanı 18 Eylül 12:00 UTC'ye kadar istediğin kadar değiştirebilirsin, son geçerli pusulan sayılır.</p>
       <div class="row">
         <div>
           <label class="f" for="sentry" data-i="lentry">entry_id</label>
-          <input type="text" id="sentry" class="mono" placeholder="hakem makbuzundaki giriş kimliği">
+          <input type="text" id="sentry" class="mono" placeholder="oy vereceğin şiirin entry_id'si">
         </div>
         <div style="flex:0 1 250px">
           <label class="f" for="sbreq" data-i="lbreq">request_id</label>
@@ -425,9 +425,9 @@ const EN = {
   s6warn:'<b>The role is chosen once.</b> The first accepted registration fixes it permanently. Writers cannot vote and voters cannot write. Writers also declare an X account and must keep it for the whole contest.',
   lrole:'Role', lx:'Your public X account', lreq:'request_id \u2014 keep it stable',
   breg:'Build registration message', brecpt:'Read receipts',
-  sreghint:'A receipt can lag; a missing receipt is a delay, not a rejection. If you retry, reuse the <b>same request_id</b> \u2014 do not churn new ones.',
+  sreghint:'You can go straight to the ballot after posting this. The receipt arrives later; a missing receipt is a delay, not a rejection. If you retry, reuse the <b>same request_id</b> \u2014 do not churn new ones.',
   s6bh:'Ballot',
-  s6bp:'Register as <span class="mono">voter</span> and get a receipt first. A ballot needs a submitted poem\u2019s <span class="mono">entry_id</span>, which does not exist until entries are receipted. The referee posts status to <span class="mono">d-sonnet-2-rules</span> every four hours. You may replace your ballot until 18 September 12:00 UTC \u2014 your last valid one counts.',
+  s6bp:'You can cast a ballot straight after posting your registration \u2014 no need to wait for the receipt, since the referee reconciles eligibility and ballots after the deadline. Only the order matters: register first, then ballot. You may replace your ballot as often as you like until 18 September 12:00 UTC; the last valid one counts.',
   lentry:'entry_id', lbreq:'request_id',
   bballot:'Build ballot', brules:'Read referee status',
   sballothint:'The voter pool pays only those who picked the <b>winner</b>. The question is not which poem you like, but which one FLOP\u2019s human judges will find best.',
